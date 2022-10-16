@@ -4,10 +4,13 @@ import {
   externalResourceUri,
   NftCollection,
   Nft,
+  BACKPACK_FEATURE_READ_API,
 } from "@coral-xyz/common";
+import type { SplNftMetadataString } from "@coral-xyz/common";
 import { customSplTokenAccounts } from "./token";
 import { solanaConnectionUrl } from "./preferences";
 import { solanaPublicKey } from "../wallet";
+import { solanaNftsFromApi } from "./nft-api";
 
 interface SolanaCollection extends NftCollection {
   items: (Nft & { publicKey: string; mint: string })[];
@@ -21,15 +24,24 @@ export const solanaNftCollections = selector<NftCollection[]>({
     //
     const connectionUrl = get(solanaConnectionUrl)!;
     const publicKey = get(solanaPublicKey)!;
-    const { splNftMetadata: metadata } = get(
-      customSplTokenAccounts({ connectionUrl, publicKey })
-    );
+
+    let metadata: Map<string, SplNftMetadataString>;
+    console.info({ BACKPACK_FEATURE_READ_API });
+    if (BACKPACK_FEATURE_READ_API) {
+      const { splNftMetadata } = get(solanaNftsFromApi({ publicKey }));
+      metadata = splNftMetadata;
+    } else {
+      const { splNftMetadata } = get(
+        customSplTokenAccounts({ connectionUrl, publicKey })
+      );
+      metadata = splNftMetadata;
+    }
 
     //
     // Bucket all the nfts by collection name.
     //
     const collections = new Map<string, SolanaCollection>();
-    for (const value of metadata.values()) {
+    for (const value of metadata!.values()) {
       let [collectionId, collection] = (() => {
         // TODO: figure out a better way to group collections, e.g. a whitelist by creator?
         if (value.tokenMetaUriData.collection) {
