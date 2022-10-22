@@ -10,7 +10,7 @@ import type { SplNftMetadataString } from "@coral-xyz/common";
 import { customSplTokenAccounts } from "./token";
 import { solanaConnectionUrl } from "./preferences";
 import { solanaPublicKey } from "../wallet";
-import { solanaNftsFromApi } from "./nft-api";
+import { solanaNftsFromApi } from "./metaplex-read-api";
 
 interface SolanaCollection extends NftCollection {
   items: (Nft & { publicKey: string; mint: string })[];
@@ -26,7 +26,6 @@ export const solanaNftCollections = selector<NftCollection[]>({
     const publicKey = get(solanaPublicKey)!;
 
     let metadata: Map<string, SplNftMetadataString>;
-    console.info({ BACKPACK_FEATURE_READ_API });
     if (BACKPACK_FEATURE_READ_API) {
       const { splNftMetadata } = get(solanaNftsFromApi({ publicKey }));
       metadata = splNftMetadata;
