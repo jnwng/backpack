@@ -27,7 +27,9 @@ export const solanaNftCollections = selector<NftCollection[]>({
 
     let metadata: Map<string, SplNftMetadataString>;
     if (BACKPACK_FEATURE_READ_API) {
-      const { splNftMetadata } = get(solanaNftsFromApi({ publicKey }));
+      const { splNftMetadata } = get(
+        solanaNftsFromApi({ connectionUrl, publicKey })
+      );
       metadata = splNftMetadata;
     } else {
       const { splNftMetadata } = get(
