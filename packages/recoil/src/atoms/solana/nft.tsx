@@ -4,7 +4,6 @@ import {
   externalResourceUri,
   NftCollection,
   Nft,
-  BACKPACK_FEATURE_READ_API,
 } from "@coral-xyz/common";
 import type { SplNftMetadataString } from "@coral-xyz/common";
 import { customSplTokenAccounts } from "./token";
