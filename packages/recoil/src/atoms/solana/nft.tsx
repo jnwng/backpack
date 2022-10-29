@@ -4,12 +4,14 @@ import {
   externalResourceUri,
   NftCollection,
   Nft,
+  READ_API,
 } from "@coral-xyz/common";
 import type { SplNftMetadataString } from "@coral-xyz/common";
 import { customSplTokenAccounts } from "./token";
 import { solanaConnectionUrl } from "./preferences";
 import { solanaPublicKey } from "../wallet";
 import { solanaNftsFromApi } from "./metaplex-read-api";
+import { featureGates } from "../feature-gates";
 
 interface SolanaCollection extends NftCollection {
   items: (Nft & { publicKey: string; mint: string })[];
@@ -23,9 +25,10 @@ export const solanaNftCollections = selector<NftCollection[]>({
     //
     const connectionUrl = get(solanaConnectionUrl)!;
     const publicKey = get(solanaPublicKey)!;
+    const gates = get(featureGates);
 
     let metadata: Map<string, SplNftMetadataString>;
-    if (BACKPACK_FEATURE_READ_API) {
+    if (gates && gates[READ_API]) {
       const { splNftMetadata } = get(
         solanaNftsFromApi({ connectionUrl, publicKey })
       );
