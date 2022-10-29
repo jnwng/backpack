@@ -1,9 +1,11 @@
 export type FEATURE_GATES_MAP = { [feature: string]: boolean };
 
 export const STRIPE_ENABLED = "STRIPE_ENABLED";
+export const READ_API = "READ_API";
 
 export const DEFAULT_FEATURE_GATES: FEATURE_GATES_MAP = {
-  STRIPE_ENABLED: false,
+  [STRIPE_ENABLED]: false,
+  [READ_API]: false,
 };
 
 /*
